@@ -43,7 +43,7 @@ The program runs `skills/p3-mode/playbooks/<execution playbook>.md`. <Who merges
 - [ ] GitHub CLI (`gh`) is the forge. Never require Graphite (`gt`). Call `link_pull_request` for every PR the moment it opens.
 - [ ] Open the PR ready, never draft, per **Opening a PR**. Use `gh pr create --base <base-branch>`. A stack child targets its parent branch.
 - [ ] Run the repo's lint and typecheck once before the PR-facing push. Push with hooks on.
-- [ ] Run the **unslop** skill before each commit and the **no-comments** skill before review.
+- [ ] Run the **unslop** skill before each commit and the comment lens of the independent review in `../SKILL.md`.
 - [ ] Triage every Bugbot and security-reviewer comment per `../references/bugbot-triage.md`.
 - [ ] Rebase onto current trunk before the code-ready report and babysit. Keep that merge base in fix rounds. Rebase again only at merge prep, on a `git merge-tree` conflict with trunk, or on a CI failure that comes from a change on trunk.
 
