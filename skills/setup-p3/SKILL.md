@@ -16,7 +16,7 @@ Call `orchestrator_capabilities`. It lists the providers and models you can pass
 
 ### 2. Load current state
 
-The roles are the labels shown in step 5. If `p3-models.md` already exists at the chosen location, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from the defaults in step 3(b). A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it.
+The roles are the labels shown in step 5. If `p3-models.md` already exists at the chosen location, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from the defaults in step 3(b). A line whose role is not in step 5, such as `how explorer` or `why investigators`, is from a retired role. Drop it.
 
 ### 3. Budget, map, and confirm
 
@@ -51,10 +51,6 @@ perf-issue: <providerInstanceId>/<model> (<effort>)
 hillclimb: <providerInstanceId>/<model> (<effort>)
 judgment and prose: <providerInstanceId>/<model> (<effort>)
 hardest tasks: <providerInstanceId>/<model> (<effort>)
-how explorer: <providerInstanceId>/<model> (<effort>)
-how explainer: <providerInstanceId>/<model> (<effort>)
-why investigators: <providerInstanceId>/<model> (<effort>)
-why synthesizer: <providerInstanceId>/<model> (<effort>)
 reflect tooling: <providerInstanceId>/<model> (<effort>)
 reflect judgment, divergent, synthesizer: <providerInstanceId>/<model> (<effort>)
 arena runners: <entry>, <entry>, <entry>
