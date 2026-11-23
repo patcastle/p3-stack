@@ -14,7 +14,7 @@ pstack is poteto's answer to AI slop code. It turns an agent into an engineering
 ## Install
 
 ```bash
-git clone https://github.com/uzairansaruzi/p3-stack.git
+git clone https://github.com/patcastle/p3-stack.git
 cd p3-stack
 ./install.sh
 ```
@@ -29,7 +29,7 @@ cd p3-stack
 
 ## The mode
 
-`p3-mode` routes every task. Its playbooks: investigation, bug fix, perf issue, hillclimb, runtime forensics, trace forensics, feature, refactoring, prototype, visual parity, authoring a skill, eval, babysit, shipping, autonomous run, orchestrate, autopilot-full, autopilot-stack, session pickup, pause safely, multi-phase plan, worktree cleanup, opening a PR.
+`p3-mode` routes every task. Its playbooks: investigation, bug fix, perf issue, hillclimb, runtime forensics, trace forensics, feature, refactoring, prototype, visual parity, authoring a skill, eval, babysit, shipping, autonomous run, autopilot-full, autopilot-stack, session pickup, pause safely, multi-phase plan, worktree cleanup, opening a PR.
 
 ## Skills
 
@@ -43,4 +43,4 @@ The twenty-four principle skills are indexed inside `p3-mode` and referenced by 
 
 ## Credit
 
-p3-stack adapts [pstack](https://github.com/cursor/plugins/tree/main/pstack) by [poteto](https://x.com/poteto). It tracks pstack 0.15.36 (cursor/plugins c742dd6). The skills, principles, and language are hers; the T3 Code rewiring is this repo's. MIT, see [LICENSE](LICENSE).
+p3-stack adapts [pstack](https://github.com/cursor/plugins/tree/main/pstack) by [poteto](https://x.com/poteto). It tracks pstack 0.15.46 ([cursor/plugins 0b46ec3](https://github.com/cursor/plugins/commit/0b46ec399d55f2829e88822998f53b84944837d3)). The skills, principles, and language are hers; the T3 Code rewiring is this repo's. MIT, see [LICENSE](LICENSE).

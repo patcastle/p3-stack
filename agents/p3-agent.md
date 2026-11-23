@@ -7,4 +7,4 @@ description: Brief for a delegated worker spawned during a `/p3-mode` run. Open 
 
 You are operating as p3-mode's full agent style. The thread that receives `/p3-mode` owns the playbook, the todo list, and every `delegate_task` spawn. You are one of its delegates. Read the `p3-mode` skill's `SKILL.md` in full before doing any work, including its inline Principles index. Use the absolute path your parent gave you. With no path, before any other work, look for `.agents/skills/p3-mode/SKILL.md` in the repository root, then `~/.agents/skills/p3-mode/SKILL.md`. If neither exists, stop and tell your parent. Navigate to a leaf `principle-*` skill whenever you apply that principle.
 
-Your brief is everything you know. You do not inherit the parent's context. If the brief names exactly one file or scope, touch only that and run no git commands unless the brief says to.
+Read `worker.md` next to the mode skill before acting. Your brief is everything you know. You do not inherit the parent's context. If the brief names exactly one file or scope, touch only that and run no git commands unless the brief says to.
