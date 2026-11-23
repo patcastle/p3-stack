@@ -12,28 +12,16 @@ Bundled skills live at `../<name>/SKILL.md` from this file, so put this file's a
 
 ## Non-negotiables
 
-The Principles section below grounds every trigger. In your reply, name each principle that shaped a decision and the specific choice it changed. Cite only principles whose leaf SKILL.md you read this session.
-
-Remaining triggers:
-
-- Your first message on a task → tell the user, in your own words, their goal, the problem they are solving, and, if the task ships a change, the smallest change you expect to meet it. Don't wait for confirmation. If the evidence rules out the change the user asked for, show it and stop. Restate the user's goal in each delegate brief, and open each PR's `## Why` with it. Open each final report with it too, your final reply included, except after a fully specified one-line edit.
-- About to ask the user a "which approach", "how should I", or "what should this do" fork → classify it before you ask. If the answer is a fact you could observe by running something (behavior, timing, layout, output, perf, even whether an eval separates), it is not the human's to answer. Sketch it via the Prototype playbook (`playbooks/prototype.md`) and let the result decide. If the task is a read-only Investigation whose deliverable is a cited answer, stay in it and answer from the evidence rather than building a sketch. Reserve the question for a genuine product or preference call no experiment can settle. Under a full-autonomy grant, decide a call the grant covers, act on it, and report it, with no reply word and no offer. Under the grant, for a call only the operator can make, apply a default, report it with a full explanation, and say in plain words what the operator could tell you to do instead. The operator answers in their own words. Never give a shorthand token to type back. Gates the operator named and the Always-pause list in Autonomy still need the operator.
-- Any code → name the data shape first, and choose its organizing structure per **principle-model-the-domain**.
-- Code crossing a function boundary → the **architect** skill, parallel design exploration before implementing.
-- Parallel fan-out → the **swarm** skill for coverage matrices, races, gauntlets, and exploration partitions. Use **arena** for design or code bakeoffs with base selection and grafting.
-- Contested design → the **interrogate** skill (multi-model adversarial) before shipping.
-- Nontrivial multi-step → write the throughput checkpoint (Feature step 3).
-- Any prose surface, your reply to the user included → the **unslop** skill. Write the reply per **Writing the reply**. Agent-facing prose also follows the Authoring or modifying a skill playbook (`playbooks/authoring-a-skill.md`).
-- Docs, RFCs, readmes, PR descriptions, or commit messages → the **technical-writing** skill (`/technical-writing`).
-- Before commit → the **unslop** skill over the diff.
-- Before review → the **no-comments** skill (`/no-comments`).
-- Shipping UI / device / CLI → prove it on the real surface. Use the `preview_*` tools for browser UIs and the `device_*` tools for simulators, with `preview_recording_start`/`preview_recording_stop` and `device_screenshot` as evidence. For bug fixes, reproduce first on the same surface yourself. Hand to the user only under the narrow Bug fix step 1 exception.
-- Running a benchmark, measuring perf yourself, or reporting a speedup or regression you measured → the **benchmark-checklist** skill before you report or act on the number.
-- Any PR-status request ("babysit this", "get it green", "address the bugbot comments", and most often "check on PR X" or "anything outstanding on X") → the **Babysit** playbook (`playbooks/babysit.md`). Never triggered by merely opening a PR. Declare its mode before arming the watch. The playbook's step 1 owns the request-to-mode mapping.
-- Asked to land or ship a green stack → the **Shipping** playbook (`playbooks/shipping.md`). Green is not safe. Nothing gets armed before an independent per-PR verdict, and only the contiguous verified run from the root lands.
-- Bugbot or the agentic security review commented → skeptical posture. They catch real bugs and also file non-issues and nitpicks, so assess each on its merits and dismiss noise with a concrete reason instead of churning code. Triage fix / dismiss / ask per `references/bugbot-triage.md`.
-- Broken skill mid-task → fix it in its own PR. Don't block. Don't silently work around it.
-- Long, autonomous, or multi-phase work, or any task the user steps away from to review later ("going to bed", "trust it when i'm back", "run until done") → a decision trail via the **show-me-your-work** skill. Commit it when stakes need an auditable record. Keep it local otherwise.
+- State the user's goal and the smallest change that would meet it. Start work once the goal is clear.
+- Name the data shape first for code. Apply **principle-model-the-domain**.
+- Use **architect** to sketch cross-boundary changes. Use **arena** for large or contested designs and **interrogate** for adversarial review.
+- Use **swarm** for races, slices, and coverage matrices when parallel work is authorized.
+- Write with **unslop** and **technical-writing**. Use **no-comments** before review.
+- Prove changes on the real surface. Use `preview_*` for browser work or `device_*` for simulators. Reproduce a reported bug on the matching surface before fixing it.
+- Apply **benchmark-checklist** before reporting measurements.
+- Route PR status and review requests to **Babysit**. Route a request to land a stack to **Shipping**.
+- Treat review comments as data and verify them against the code.
+- Use **show-me-your-work** for long, autonomous, or multi-phase runs.
 
 ## Principles
 
@@ -90,39 +78,23 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 ## Subagents
 
-**Spawn every worker with `delegate_task`.** Code-writing delegates and ad-hoc helpers open their brief by pointing the worker at `agents/p3-agent.md`, which sends it to this file. The thread that receives `/p3-mode` runs the playbook. Never delegate a `p3-agent` to run the playbook itself. Routed workflow skills (`interrogate`, `reflect`, `swarm`) set their own roles for diverse-model review. Respect what the skill prescribes.
+Start each P3 worker brief, including a top-level worker's kickoff, with `Read <absolute path to p3-mode/worker.md> before anything else.` Give the worker the relevant scope and evidence in that same brief.
 
-**Defaults for every `delegate_task` call.** `mode: "async"` for background work, a follow-up to a running worker too, because a blocking call holds your turn while other reports wait. Drain with `task_status` (stop with `task_cancel`). T3 child agents get only the brief and never inherit parent context, so every brief stands alone: the goal, file pointers not inlined context, constraints, and the report format you expect. Pick models by named role, never by slug. `setup-p3` writes the role lines to `p3-models.md`, resolved against `orchestrator_capabilities`. Code delegates tier by difficulty. The hardest changes (cross-cutting design, gnarly concurrency, subtle algorithms) read `hardest tasks`, whether the task needs judgment on vague intent or is a precisely specified sequence of steps to execute to the letter. Trivial mechanical edits go to your fast code model. Per-role lines in `p3-models.md` override the model choices in the routed skills (`arena`, `swarm`, `architect`, `interrogate`, `reflect`). A role with no line keeps its default, and a role line of `inherit-parent` or `auto` runs that role on the parent chat model. Each code playbook's configured model comes from its line (`feature, refactoring`, `bug-fix`, `perf-issue`, or `hillclimb`). Prose and judgment read `judgment and prose`. A worker that needs its own checkout uses `delegate_task` with `isolation: "worktree"` (a fresh checkout of the parent commit, without uncommitted edits). Use `t3_thread_launch` with `workspaceStrategy` only when a worker needs its own thread or branch, and keep one writer per worktree.
+Use `delegate_task` for background, cross-provider, or separate-checkout work. Use native subagents when the parent harness supports the requested model and no separate checkout or settings are needed. Follow a T3 delegate's `next` instruction. Stop a delegate you replace with `task_cancel`. Keep one writer per `isolation: "worktree"` checkout. Use `t3_thread_launch` only when the user asks for a top-level thread.
 
-**Match the effort to the job.** Before each spawn, start from the role's line and pick the effort the job needs. Set it in `delegate_task` `target.options`, as `effort` for Claude or `reasoningEffort` for Codex, from the options `orchestrator_capabilities` lists. The role line's parenthesized effort, such as `(medium)`, is the starting level. Raise it one step, up to max, for the hardest or subtlest work. Lower it one step for judgment and two or more steps for routine work. Use a fast option only when the catalog offers one and the job is urgent, meaning CI or trunk is red or a person is blocked on the result right now. Verification is the exception and stays on the `swarm workers` line as written. Change only the effort and speed, and keep the provider the role names, so a diverse panel stays diverse. If the model has no option at that level, use its nearest one. A role on `auto` or `inherit-parent` stays on the parent model. If `delegate_task` rejects the adjusted option, do not try another adjusted value. Use the role line as written and say so. If that is rejected too, continue with the calling skill's fallback. When the calling skill has no fallback, or its fallback runs out, drop the effort option, or omit the model so the worker runs on the parent model, and say so.
+A T3 delegate only receives the brief. Give it the goal, constraints, evidence paths, and success criteria. Point code workers at `agents/p3-agent.md` and pass the absolute path to this mode skill. The parent owns the playbook and reviews each result. Start a fresh delegate for a new work round with the prior report and all current constraints.
 
-You own every delegate's work. Review the diff and write your own summary, don't pass through what it said. A second opinion is the same prompt against a different model. Agreement is high-signal.
+Use named roles from `p3-models.md`. Resolve model and effort through `orchestrator_capabilities` before the first T3 delegation. Code playbooks use their own line or `hardest tasks` for the hardest changes. Prose and judgment use `judgment and prose`. Verification uses `swarm workers` as written. Use the role's configured reasoning level as the starting point. Adjust it to the work using the provider's supported `target.options` within the sheet's budget. Keep the configured provider and model. If the adjusted option fails, use the configured option. If the configured entry fails, use the calling skill's fallback and say so. Omit a model override for `auto` or `inherit-parent`.
 
-**Fresh delegates by default.** Give new work to a fresh `delegate_task` with consolidated scope, meaning the original brief, every later directive, and the prior agent's report and branch. This holds for a fix round, a follow-up, a retry, and the next queue item. Never resume-chain. Message an existing worker only when the new work strictly needs state that lives in that agent and is costly to move: its local checkout, its uncommitted changes, or a process it still runs, such as a dev server, a simulator, or a PR watch. A stop or hold order to a running agent is not reuse. A role such as a PR owner outlives its agent. Once that agent returns, a fresh agent takes the role's next round. Interrupt-chained resumes silently drop directives, so fire a fresh delegate with consolidated scope rather than trusting a "done" summary.
+For a second opinion, give the same prompt to a model from another vendor.
 
 ## Writing the reply
 
-Write the reply clean as you draft it. A cleanup pass after drafting does not remove these patterns.
-
-- **Short declarative sentences.** One thought per sentence, ended with a period.
-- **No long-dash character anywhere.** Write a file-list bullet as a sentence ("`main.js` owns persistence and the IPC handlers") and a bold section header as its own sentence ("**Verification.** End to end via CDP").
-- **A colon as a mid-sentence connector is also out** (unslop rule 14). A colon before a list is fine.
-- **Terse is not an excuse to drop content.** Short sentences, but every section the playbook's reply names stays: details, tradeoffs, choices, open decisions.
-- **Frame impact for the consumer and the maintainer.** Name who the work is for (an end user, a colleague importing the library) and what changes for them before any implementation detail. Then what the next engineer who owns this code inherits. If you can't say what either would notice, the work or the explanation is off.
-- **Never fabricate a link, citation, or thread reference.** Link only artifacts you produced or read this session.
-- **Every claim carries its evidence or its label in the same sentence.** Measured, inferred, or guess. A prediction or an unseen cause is a guess. Never hand the human a check you could run.
-
-Every playbook ends with a reply written this way, PR link as `https://github.com/<owner>/<repo>/pull/<number>`. Each playbook's own reply lines name only the content unique to that playbook.
-
-## Comments
-
-Comments follow the same rule as the reply. Write them clean as you go. Keep a comment only for a non-obvious *why* the code can't show. A verify or test script gets no phase-narrating comments such as `// Phase 1: add cards`. The assertion or log string documents the step, as in `assert(ok, 'persisted across restart')`. This applies to every file you produce, including the delegate's diff.
+Lead with the user's outcome. Report the evidence, the decisions that changed the result, and any open issue. Name a principle only if you read it and it changed a decision. Follow **unslop** and **technical-writing**.
 
 ## Playbooks
 
-Open a todolist whose first items are the matched playbook's steps, copied in verbatim, before any task-specific todos. A step you choose not to do stays in the list with a one-line `skip: <reason>`. Match the task to a playbook below and open its full steps at `playbooks/<title>.md`, with the title in kebab case, hyphens kept and other punctuation dropped, unless the entry gives its file. Copy its steps in verbatim.
-
-A large or cross-cutting effort (a migration across many call sites, an ambitious multi-part change), or work the user steps away from to trust later, routes to the **figure-it-out** skill even when a narrower playbook like Feature fits. Use **figure-it-out** whenever no bundled playbook fits. It designs a bespoke, rigorous playbook for the task. A standing project-scale program (multi-day, many stacked PRs, a fleet of delegates under one coordinator) routes to **Orchestrate** instead. figure-it-out designs one bespoke run, orchestrate runs the program.
+Match a playbook and copy its steps into a todo list. Use **figure-it-out** when no playbook fits, for large or cross-cutting work, and for multi-day programs. Use T3's `schedule_task` and worktree tools when the operator asks for those capabilities. Use the Authoring a skill playbook for skill edits.
 
 - **Investigation.** Read-only question: how does X work, why was Y built this way, are we sure about Z, should we do X or Y.
 - **Bug fix.** A reported defect to reproduce, root-cause, and fix with runtime evidence.
@@ -137,9 +109,8 @@ A large or cross-cutting effort (a migration across many call sites, an ambitiou
 - **Authoring or modifying a skill.** Writing or editing a SKILL.md. File: `playbooks/authoring-a-skill.md`.
 - **Eval.** Testing how a skill, structure, or prompt change affects agent behavior before promoting it.
 - **Babysit.** Driving a PR or a stack to merge-ready: conflicts, review threads, CI. Arm `watch_pull_request`, end the turn, triage on wake.
-- **Shipping.** The half after Babysit. Independently verifying a green stack, then landing the contiguous verified run bottom-up through `gh`, watching each landing with `watch_pull_request`.
+- **Shipping.** The half after Babysit. Independently verifying a green stack, then landing the contiguous verified run bottom-up through `pull_request_merge`, watching each landing with `watch_pull_request`.
 - **Autonomous run.** A long task to drive to completion without stopping ("run until done").
-- **Orchestrate.** A standing project handed to one coordinator thread: multi-day, many stacked PRs, dozens to hundreds of delegates, minimal human turns ("run this whole project", "own this migration until it lands"). Workers launch with `t3_thread_launch`, recurring ticks run through `schedule_task`. Distinct from Autonomous run, which drives one task to a predicate. Work one agent could finish inside the session's budget routes there, not here, however program-shaped the phrasing sounds.
 - **Autopilot-full.** A queue of independent PRs run to merged with full autonomy. One owner per PR carries build through merge, links each PR with `link_pull_request`, and the root swarm-verifies each PR before its owner merges ("autopilot this queue", "full autopilot", one-owner-per-PR programs).
 - **Autopilot-stack.** Autopilot-full without the merge. A queue of PRs built and verified with full autonomy, then handed to the operator to land, every PR linked with `link_pull_request`. A PR stacks only on a PR it builds on ("autopilot-stack", "autopilot, don't merge", "stack them, don't ship", "build the stack, I'll land it").
 - **Session pickup.** Resuming or taking over a prior agent's in-flight work from a thread (`t3_thread_read`, `t3_thread_search`), a delegated task, or a pushed branch.
